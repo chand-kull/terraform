@@ -6,7 +6,7 @@ LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log #to save script name with time
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
-VALIDATE(){
+VALIDATE() {
    if [ $1 -ne 0 ]
    then 
       echo "$2..FAILURE"
