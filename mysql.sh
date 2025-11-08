@@ -33,7 +33,17 @@ VALIDATE $? "enabling mysql server" &>>$LOGFILE
 systemctl start mysqld
 VALIDATE $? "starting mysql" &>>$LOGFILE
 
-mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
-VALIDATE $? "settingup root password"
+# mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
+# VALIDATE $? "settingup root password"
 
+#below code will seful for idempotent nature
+mysql -h db.zarasolutions.shop -uroot -pExpenseApp@1 -e 'show databases;' &>>$LOGFILE
+if [ $? -ne 0 ]
+then
+  mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
+else
+  echo "MYSQL root password is already setup.....$G skipping $N" 
+fi 
  
+#interviw question
+# idempotency?
