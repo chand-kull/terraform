@@ -45,6 +45,40 @@ else
 
 fi
 
+mkdir  -p /app
+VALIDATE $? "creating app directory"
+
+
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+VALIDATE $? "downloading backend code"
+
+
+cd /app
+unzip /tmp/backend.zip
+VALIDATE $? "extracting backend code"
+
+npm install
+VALIDATE $? "installing nodejs dependencies"
+
+cp /home/ec2-user/PRACTICE/expense-shell/backend.service  /etc/systemd/system/backend.service
+VALIDATE $? "copying backend service"
+
+systemctl daemon-reload
+VALIDATE $? "daemon-reload"
+
+systemctl start backend
+VALIDATE $? "start backend"
+
+systemctl enable backend
+VALIDATE $? "enabling backend"
+
+dnf install mysql -y &>>$LOGFILE
+VALIDATE $? "installing mysql"
+
+mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pExpenseApp@1 < /app/schema/backend.sql
+
+
+
 
 
 
